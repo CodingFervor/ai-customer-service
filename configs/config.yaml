@@ -19,17 +19,3 @@ redis:
 jwt:
   secret: ai-customer-service-secret-key
   expire_hours: 24
-
-ai:
-  provider: openai
-  model: gpt-4
-  api_key: ""
-  max_tokens: 2048
-  temperature: 0.7
-
-chat:
-  max_concurrent_per_agent: 5
-  auto_reply_timeout: 30
-  session_timeout: 1800
-  enable_bot: true
-  bot_name: AI Assistant
