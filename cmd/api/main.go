@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/CodingFervor/ai-customer-service/internal/database"
 	_ "github.com/lib/pq"
 )
 
@@ -126,7 +128,24 @@ func main() {
 	}
 
 	log.Println("AI Customer Service server starting on :8080")
-	if err := r.Run(":8080"); err != nil {
+	if err := addr := ":" + strconv.Itoa(8080)
+	srv := &http.Server{Addr: addr, Handler: r}
+	go func() {
+		logger.Info("server listening", "port", 8080)
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			logger.Error("server error", "error", err)
+		}
+	}()
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	logger.Info("shutting down...")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		logger.Error("forced shutdown", "error", err)
+	}
+	logger.Info("server exited"); err != nil {
 		log.Fatal("Failed to start server:", err)
 	}
 }
